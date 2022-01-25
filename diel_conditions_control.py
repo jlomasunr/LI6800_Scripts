@@ -1,38 +1,53 @@
-from bpdefs import ASSIGN, LOOP, SETCONTROL, LOG, Nothing, CheckBox,Text, Button, DropDown, RadioBtns, EditBox
+from bpdefs import SETCONTROL, ASSIGN, LOOP, LOG, IF, Nothing, CheckBox, Text, Button, DropDown, RadioBtns, EditBox, DataDict
+
 steps=[
-SETCONTROL("VDP_leaf","1.8","float"),
-SETCONTROL("t_leaf", "23", "float"),
-
+# Set a control: SETCONTROL('target', 'value', 'eval' [,opt_target=''])
+SETCONTROL("VPD_leaf","1.8","float"),
+# Set a control: SETCONTROL('target', 'value', 'eval' [,opt_target=''])
+SETCONTROL("Tleaf","23","float"),
+# Assign a variable to a Data Dictionary entry: ASSIGN('varname', dd=DataDict('group', 'name' [,bool_logged]) [,track=False] [,optvar='varname'] [dlg=Nothing()))])
+ASSIGN("Q",
+	dd=DataDict('PPFD_out','Meas'),
+	track=True),
+# Loop for a duration: LOOP(dur="float" [,units='Seconds' Second|Minutes|Hours ] [,var=''] [,mininc=''])
 LOOP(dur="1441",
-    units="Minutes",
-    mininc="300"
-    steps=(
-        LOG(),
-        # When the lights go off, update the temperature and humidity settings
-        IF("Qin<10",
-            steps=(
-                SETCONTROL("VDP_leaf","1.2","float"),
-                LOG(rem="VDP_leaf updated to 1.2 based on Qin")
-                )
-            ),
-        IF("Qin<10",
-            steps=(
-                SETCONTROL("t_leaf","21","float"),
-                LOG(rem="t_leaf updated to 21C based on Qin")
-                )
-            ),
-        # When the lights come on, update the temperature and humidity settings
-        IF("Qin>=10",
-            steps=(
-                SETCONTROL("VDP_leaf","1.8","float"),
-                LOG(rem="VDP_leaf updated to 1.8 based on Qin")
-                )
-            ),
-        IF("Qin>=10",
-            steps=(
-                SETCONTROL("t_leaf","23","float"),
-                LOG(rem="t_leaf updated to 23C based on Qin")
-                )
-            ),
-
-    ))]
+	units="Minutes",
+	mininc="300",
+	steps=(
+		# Log a data record: LOG([avg='Default'] [,match='Default'] [,matchH2O='Default'] [,flr='Default'] [flash='Default'])
+		LOG(),
+		IF("Q<10",
+			steps=(
+				# Set a control: SETCONTROL('target', 'value', 'eval' [,opt_target=''])
+				SETCONTROL("VPD_leaf","1.2","float"),
+				# Log a remark: LOG(rem=string)
+				LOG(rem="VPD_leaf updated to 1.2 based on Q"),
+			)
+		),
+		IF("Q<10",
+			steps=(
+				# Set a control: SETCONTROL('target', 'value', 'eval' [,opt_target=''])
+				SETCONTROL("Tleaf","21","float"),
+				# Log a remark: LOG(rem=string)
+				LOG(rem="Tleaf updated to 21C based on Q"),
+			)
+		),
+		IF("Q>=10",
+			steps=(
+				# Set a control: SETCONTROL('target', 'value', 'eval' [,opt_target=''])
+				SETCONTROL("VPD_leaf","1.8","float"),
+				# Log a remark: LOG(rem=string)
+				LOG(rem="VPD_leaf updated to 1.8 based on Q"),
+			)
+		),
+		IF("Q>=10",
+			steps=(
+				# Set a control: SETCONTROL('target', 'value', 'eval' [,opt_target=''])
+				SETCONTROL("Tleaf","23","float"),
+				# Log a remark: LOG(rem=string)
+				LOG(rem="Tleaf updated to 23C based on Q"),
+			)
+		),
+	)
+),
+]
