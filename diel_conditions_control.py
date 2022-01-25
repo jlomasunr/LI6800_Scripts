@@ -8,8 +8,31 @@ LOOP(dur="1441",
     mininc="300"
     steps=(
         LOG(),
-        IF("Qin<10", SETCONTROL("VDP_leaf","1.2","float"),
-        ELSE( SETCONTROL("VDP_leaf","1.8","float"),
-        IF("Qin<10", SETCONTROL("t_leaf","21","float"),
-        ELSE("Qin<10", SETCONTROL("t_leaf","23","float")
+        # When the lights go off, update the temperature and humidity settings
+        IF("Qin<10",
+            steps=(
+                SETCONTROL("VDP_leaf","1.2","float"),
+                LOG(rem="VDP_leaf updated to 1.2 based on Qin")
+                )
+            ),
+        IF("Qin<10",
+            steps=(
+                SETCONTROL("t_leaf","21","float"),
+                LOG(rem="t_leaf updated to 21C based on Qin")
+                )
+            ),
+        # When the lights come on, update the temperature and humidity settings
+        IF("Qin>=10",
+            steps=(
+                SETCONTROL("VDP_leaf","1.8","float"),
+                LOG(rem="VDP_leaf updated to 1.8 based on Qin")
+                )
+            ),
+        IF("Qin>=10",
+            steps=(
+                SETCONTROL("t_leaf","23","float"),
+                LOG(rem="t_leaf updated to 23C based on Qin")
+                )
+            ),
+
     ))]
