@@ -5,7 +5,7 @@ ASSIGN("logint",exp="lambda x: 30/(1+50*math.exp(-0.03*x))+0"),
 
 # Assign a variable to an expression: ASSIGN('varname',exp="expression" [,dlg=Nothing()])
 ASSIGN("test",exp="lambda x: x if x >= 1 else 0"),
-
+#comment
 # Loop through a list: LOOP(list=itemList [,var=varname][,mininc=''])
 LOOP(list="1500,50,1500",
     var="x",
